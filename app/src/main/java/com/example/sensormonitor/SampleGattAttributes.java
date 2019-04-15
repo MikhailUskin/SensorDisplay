@@ -1,4 +1,4 @@
-package com.example.sensordisplay;
+package com.example.sensormonitor;
 
 import java.util.HashMap;
 

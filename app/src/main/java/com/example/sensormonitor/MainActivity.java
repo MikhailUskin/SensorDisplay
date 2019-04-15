@@ -1,4 +1,4 @@
-package com.example.sensordisplay;
+package com.example.sensormonitor;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
