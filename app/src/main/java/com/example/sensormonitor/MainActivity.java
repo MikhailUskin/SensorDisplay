@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
                 initPlot();
             } else if (BluetoothLEService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 mStatusBlueTv.setText("Device disconnected");
+                initPlot();
             } else if (BluetoothLEService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 displayGattServices(mBluetoothLEService.getSupportedGattServices());
 
@@ -204,6 +205,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        initPlot();
     }
 
     @Override
@@ -393,7 +396,7 @@ public class MainActivity extends AppCompatActivity {
         mTempSeries.setTitle("t°C");
 
         mTempGv.getViewport().setMinX(0);
-        mTempGv.getViewport().setMaxX(45);
+        mTempGv.getViewport().setMaxX(30);
 
         mTempGv.getViewport().setMinY(0);
         mTempGv.getViewport().setMaxY(50);
@@ -401,7 +404,7 @@ public class MainActivity extends AppCompatActivity {
         mTempGv.getViewport().setYAxisBoundsManual(true);
         mTempGv.getViewport().setXAxisBoundsManual(true);
 
-        mTempGv.getGridLabelRenderer().setNumHorizontalLabels(9);
+        mTempGv.getGridLabelRenderer().setNumHorizontalLabels(6);
         mTempGv.getGridLabelRenderer().setNumVerticalLabels(10);
 
         mTempGv.getLegendRenderer().setVisible(true);
@@ -414,6 +417,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void drawPoint(double x, double y){
-        mTempSeries.appendData(new DataPoint(x, y), x > 60 ? true : false,1000);
+        mTempSeries.appendData(new DataPoint(x, y), x > 30 ? true : false,1000);
     }
 }
