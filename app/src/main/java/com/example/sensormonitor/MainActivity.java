@@ -26,6 +26,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.LegendRenderer;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
@@ -389,22 +390,30 @@ public class MainActivity extends AppCompatActivity {
     private void initPlot(){
         mTempSeries = new LineGraphSeries<DataPoint>();
         mTempSeries.setColor(Color.RED);
+        mTempSeries.setTitle("t°C");
 
         mTempGv.getViewport().setMinX(0);
-        mTempGv.getViewport().setMaxX(10);
+        mTempGv.getViewport().setMaxX(45);
 
         mTempGv.getViewport().setMinY(0);
         mTempGv.getViewport().setMaxY(50);
 
         mTempGv.getViewport().setYAxisBoundsManual(true);
         mTempGv.getViewport().setXAxisBoundsManual(true);
-        mTempGv.getViewport().setScrollable(true);
+
+        mTempGv.getGridLabelRenderer().setNumHorizontalLabels(9);
+        mTempGv.getGridLabelRenderer().setNumVerticalLabels(10);
+
+        mTempGv.getLegendRenderer().setVisible(true);
+        mTempGv.getLegendRenderer().setTextSize(50);
+        mTempGv.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
+        mTempGv.getLegendRenderer().setBackgroundColor(Color.parseColor("#CCFFFFFF"));
 
         mTempGv.removeAllSeries();
         mTempGv.addSeries(mTempSeries);
     }
 
     private void drawPoint(double x, double y){
-        mTempSeries.appendData(new DataPoint(x, y), x > 10 ? true : false,1000);
+        mTempSeries.appendData(new DataPoint(x, y), x > 60 ? true : false,1000);
     }
 }
