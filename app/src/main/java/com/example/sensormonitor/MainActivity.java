@@ -59,7 +59,7 @@ import android.util.Log;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String DEVICE_NAME = "ATMEL-HTP";
+    private static final String DEVICE_NAME = "ATMEL-BAS";
     private static final int REQUEST_ENABLE_BT = 0;
 
     private static final String TAG = "MainActivity";
