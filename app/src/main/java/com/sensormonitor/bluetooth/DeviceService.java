@@ -1,4 +1,4 @@
-package com.example.sensormonitor;
+package com.sensormonitor.bluetooth;
 
 import android.app.Service;
 
@@ -20,35 +20,37 @@ import android.util.Log;
 import java.util.List;
 import java.util.UUID;
 
-import android.os.Handler;
-
 import static android.bluetooth.BluetoothProfile.STATE_DISCONNECTED;
 
-public class BluetoothLEService extends Service {
+import com.sensormonitor.bluetooth.ProvidedGattCharacteristics;
 
+public class DeviceService extends Service {
+    private static final String TAG = "DeviceService";
+
+    // Service events
     public final static String ACTION_GATT_CONNECTED =
-            "com.app.androidkt.heartratemonitor.le.ACTION_GATT_CONNECTED";
+            "com.sensormonitor.bluetooth.events.ACTION_GATT_CONNECTED";
     public final static String ACTION_GATT_DISCONNECTED =
-            "com.app.androidkt.heartratemonitor.ACTION_GATT_DISCONNECTED";
+            "com.sensormonitor.bluetooth.events.ACTION_GATT_DISCONNECTED";
     public final static String ACTION_GATT_SERVICES_DISCOVERED =
-            "com.app.androidkt.heartratemonitor.le.ACTION_GATT_SERVICES_DISCOVERED";
+            "com.sensormonitor.bluetooth.events.ACTION_GATT_SERVICES_DISCOVERED";
     public final static String ACTION_DATA_AVAILABLE =
-            "com.app.androidkt.heartratemonitor.ACTION_DATA_AVAILABLE";
-    public final static String EXTRA_DATA =
-            "com.app.androidkt.heartratemonitor.le.EXTRA_DATA";
+            "com.sensormonitor.bluetooth.events.ACTION_DATA_AVAILABLE";
 
+    // Service data
+    public final static String DATA_TYPE_TEMPERATURE =
+            "com.sensormonitor.bluetooth.data.DATA_TYPE_TEMPERATURE";
+    public final static String DATA_TYPE_BATTERY_CHARGE =
+            "com.sensormonitor.bluetooth.data.DATA_TYPE_BATTERY_CHARGE";
 
-    public final static UUID UUID_HEALTH_THERMOMETER_MEASUREMENT =
-            UUID.fromString(SampleGattAttributes.UUID_HEALTH_THERMOMETER_MEASUREMENT_UUID);
+    // Service states
+    public static final int STATE_DISCONNECT = 0;
+    public static final int STATE_CONNECTING = 1;
+    public static final int STATE_CONNECTED = 2;
 
-    private static final String TAG = "BluetoothLEService";
-    private static final int STATE_DISCONNECT = 0;
-    private static final int STATE_CONNECTING = 1;
-    private static final int STATE_CONNECTED = 2;
     IBinder mBinder = new LocalBinder();
     private int mConnectionState = STATE_DISCONNECT;
     private BluetoothAdapter mBlueAdapter;
-
     private BluetoothGatt mBluetoothGatt;
     private String bluetoothAddress;
 
@@ -130,7 +132,7 @@ public class BluetoothLEService extends Service {
         }
     };
 
-    public BluetoothLEService() {
+    public DeviceService() {
     }
 
     public List<BluetoothGattService> getSupportedGattServices() {
@@ -148,10 +150,18 @@ public class BluetoothLEService extends Service {
 
     private void broadcastUpdate(final String action, final BluetoothGattCharacteristic characteristic) {
         final Intent intent = new Intent(action);
-        if (UUID_HEALTH_THERMOMETER_MEASUREMENT.equals(characteristic.getUuid())) {
+        if (ProvidedGattCharacteristics.UUID_TEMPERATURE_MEASUREMENT_CHARACTERISTIC.equals(characteristic.getUuid().toString())) {
             int format = BluetoothGattCharacteristic.FORMAT_FLOAT;
             final float temperature = characteristic.getFloatValue(format, 1);
-            intent.putExtra(EXTRA_DATA, temperature);
+            intent.putExtra(DATA_TYPE_TEMPERATURE, temperature);
+        }
+        else if (ProvidedGattCharacteristics.UUID_BATTERY_LEVEL_CHARACTERISTIC.equals(characteristic.getUuid().toString())) {
+            int format = BluetoothGattCharacteristic.FORMAT_UINT8;
+            final float batteryLevel = (float)characteristic.getIntValue(format, 0);
+            intent.putExtra(DATA_TYPE_BATTERY_CHARGE, batteryLevel);
+        }
+        else{
+            return;
         }
 
         sendBroadcast(intent);
@@ -245,8 +255,8 @@ public class BluetoothLEService extends Service {
     }
 
     public class LocalBinder extends Binder {
-        BluetoothLEService getService() {
-            return BluetoothLEService.this;
+        public DeviceService getService() {
+            return DeviceService.this;
         }
     }
 }

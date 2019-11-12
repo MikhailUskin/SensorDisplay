@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.example.sensormonitor"
+        applicationId "com.sensormonitor"
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"

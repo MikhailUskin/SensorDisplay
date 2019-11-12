@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.sensormonitor">
+    package="com.sensormonitor">
 
     <uses-sdk android:targetSdkVersion="21" />
 
@@ -24,7 +24,7 @@
         android:theme="@style/AppTheme">
 
         <service
-            android:name="com.example.sensormonitor.BluetoothLEService"
+            android:name="com.sensormonitor.bluetooth.DeviceService"
             android:enabled="true"
             android:exported="true" />
 
